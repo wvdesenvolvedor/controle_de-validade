@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Controle de Validade | COM QUANTIDADE</title>
+  <style>
+    :root{--bg:#080b10;--panel:#111720;--panel2:#171f2b;--line:#303b50;--soft:#9daec5;--text:#f2f6fc;--blue:#4787ff;--green:#38e092;--yellow:#ffe063;--orange:#ff9b4a;--purple:#c18aff;--red:#ff5f73;--white:#f3f5fb}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(ellipse at 90% -10%,#152340 0,transparent 40%),var(--bg);color:var(--text);font:15px/1.45 Arial,Helvetica,sans-serif;min-height:100vh}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .container{width:min(1220px,calc(100% - 32px));margin:0 auto}
+    .masthead{padding:29px 0 19px;border-bottom:1px solid #202b3a}
+    .topline{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between}
+    .eyebrow{color:#8aa8d8;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+    h1{font-size:clamp(24px,3vw,34px);line-height:1.12;margin:0;letter-spacing:-.7px}
+    .subtitle{color:var(--soft);margin:9px 0 0;font-size:13px}
+    .top-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #3b4c63;border-radius:9px;padding:11px 15px;background:#1b2635;color:white;font-weight:700;min-height:42px;transition:filter .16s,background .16s}
+    .btn:hover{filter:brightness(1.18)}
+    .btn-primary{background:#2366df;border-color:#3575ef}
+    .btn-subtle{background:transparent;color:#d0d9e8}
+    .btn-danger{background:#4c2029;border-color:#813441;color:#ffcbd1}
+    .layout{padding:23px 0 38px}
+    .stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:22px}
+    .stat{min-width:0;background:var(--panel);border:1px solid #29364a;border-radius:12px;padding:12px 12px 11px;border-top:3px solid var(--accent,#74849e)}
+    .stat .count{display:block;font-size:26px;line-height:1.1;font-weight:850;font-variant-numeric:tabular-nums;margin:2px 0 4px;color:var(--accent,#e1e9f6)}
+    .stat .name{font-size:11px;color:#b8c5d8;font-weight:700}
+    .stat.red{--accent:var(--red)}.stat.purple{--accent:var(--purple)}.stat.orange{--accent:var(--orange)}.stat.yellow{--accent:var(--yellow)}.stat.green{--accent:var(--green)}
+    .panel{background:var(--panel);border:1px solid #29364a;border-radius:14px;overflow:hidden;margin-bottom:20px;box-shadow:0 10px 35px #0002}
+    .panel-title{padding:16px 20px;background:#151e2a;border-bottom:1px solid #28354a;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .panel-title h2{margin:0;font-size:16px}
+    .note{font-size:12px;color:#9facbe}
+    .editor{padding:20px;display:grid;grid-template-columns:minmax(185px,2.5fr) minmax(70px,.6fr) minmax(135px,1.15fr) minmax(155px,1.5fr) minmax(145px,1.05fr);gap:13px;align-items:end}
+    .field label{display:block;color:#b9c9dd;font-size:12px;font-weight:800;letter-spacing:.25px;margin:0 0 6px}
+    .field input,.field select,.search,.sector-filter{outline:none;border:1px solid #394b62;background:#090f18;color:white;border-radius:8px;padding:11px 12px;width:100%;min-height:43px}
+    .field input:focus,.field select:focus,.search:focus,.sector-filter:focus{border-color:#6aa0ff;box-shadow:0 0 0 3px #4285ff22}
+    .field input::placeholder,.search::placeholder{color:#75859b}
+    .entry-panel{overflow:visible;position:relative;z-index:5}
+    .entry-panel .panel-title{border-radius:14px 14px 0 0}
+    .autocomplete{position:relative}
+    .suggestions{position:absolute;z-index:30;top:calc(100% + 5px);left:0;right:0;max-height:235px;overflow:auto;background:#17253b;border:1px solid #52709b;border-radius:9px;box-shadow:0 15px 35px #000b;padding:5px}
+    .suggestions[hidden]{display:none!important}
+    .suggestion{display:block;width:100%;text-align:left;border:0;border-radius:5px;background:transparent;color:#f1f6ff;padding:9px 10px;cursor:pointer;font-size:14px;overflow-wrap:anywhere}
+    .suggestion:hover,.suggestion.active{background:#294b7b;color:#fff}
+    .autocomplete-note{display:block;color:#9fb4d3;font-size:11px;margin:5px 0 0}
+    .sector-filter{width:auto;min-width:172px;font-weight:700;padding:8px 10px;min-height:39px}
+    .filter-label{display:inline-flex;align-items:center;gap:7px;font-weight:700}
+    .filter-label span{white-space:nowrap}
+    .field select option,.sector-filter option{background:#101928;color:#fff}
+    .editor-footer{padding:0 20px 19px;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+    .save-text{font-size:12px;color:#a4b4c9}
+    .cancel-hidden{display:none}
+    .table-tools{padding:14px 17px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid #2a384c}
+    .search{width:min(360px,100%)}
+    .table-tools-right{display:flex;gap:12px;align-items:center;flex-wrap:wrap;color:#b6c7dd;font-size:12px}
+    .check{display:flex;gap:7px;align-items:center;cursor:pointer;user-select:none}
+    .check input{accent-color:#4c8bff;width:16px;height:16px}
+    .table-scroll{overflow-x:auto}
+    table{border-collapse:collapse;width:100%;table-layout:fixed}
+    .sheet col.product{width:43%}.sheet col.und{width:8%}.sheet col.expiry{width:19%}.sheet col.others{width:23%}.sheet col.actions{width:7%}
+    .sheet-title{background:#101c31;color:#c7d9ff;font-weight:900;text-align:center;font-size:17px;letter-spacing:.35px;height:46px}
+    .sheet th,.sheet td{border:1px solid #3a5b92;padding:9px 11px;vertical-align:middle}
+    .sheet thead tr.headers th{color:#d4e3ff;background:#1b2941;text-align:center;letter-spacing:.7px;font-size:12px;font-weight:900;height:40px}
+    .sheet td{background:#0e1520;height:43px;color:#e3eaf3;overflow-wrap:anywhere}
+    .sheet tbody tr:nth-child(even) td{background:#121c29}
+    .sheet tbody tr:hover td{background:#1b2b40}
+    .sheet td:nth-child(2),.sheet td:nth-child(3){text-align:center;font-variant-numeric:tabular-nums}
+    .sheet td:nth-child(4){color:#cad5e5}
+    .product-text{font-weight:800;letter-spacing:.1px;word-break:break-word}
+    .product-text.normal{color:var(--white)}.product-text.green{color:var(--green)}.product-text.yellow{color:var(--yellow)}.product-text.orange{color:var(--orange)}.product-text.purple{color:var(--purple)}.product-text.red{color:var(--red)}
+    .status{display:inline-flex;font-size:10px;font-weight:800;margin-left:8px;border-radius:5px;padding:2px 5px;border:1px solid currentColor;vertical-align:middle;white-space:nowrap}
+    .status.normal{color:#b8c9e2}.status.green{color:var(--green)}.status.yellow{color:var(--yellow)}.status.orange{color:var(--orange)}.status.purple{color:var(--purple)}.status.red{color:var(--red)}
+    /* Destaque na linha do produto quando a validade é amanhã (exatamente 1 dia). */
+    .product-text.tomorrow-blink,.status.tomorrow-blink{animation:tomorrowBlink 1.15s ease-in-out infinite}
+    @keyframes tomorrowBlink{0%,100%{opacity:1;filter:brightness(1)}50%{opacity:.23;filter:brightness(1.5)}}
+    .days{display:block;color:#94a6c1;font-size:11px;margin-top:2px}
+    .row-actions{display:flex;justify-content:center;gap:4px}
+    .icon-btn{background:#22334a;border:1px solid #3f5573;color:#dfe9f8;border-radius:6px;min-width:29px;height:30px;padding:0 5px;font-size:14px}
+    .icon-btn:hover{background:#354d6c}.icon-btn.delete:hover{background:#6c2737;color:white}
+    .empty-state{text-align:center;padding:43px 16px!important;color:#9eafc7!important}
+    /* Alerta na própria página: alerta visual, sem depender de permissão de notificações. */
+    .btn-alert{background:#7c1325;border-color:#ff526d;color:#fff;animation:urgentButton 1.9s ease-in-out infinite}
+    .btn-alert[hidden],.alert-overlay[hidden]{display:none!important}
+    .alert-overlay{position:fixed;inset:0;z-index:1000;background:rgba(61,6,15,.82);display:flex;align-items:center;justify-content:center;padding:16px;animation:urgentBackdrop 2s ease-in-out infinite;overflow-y:auto}
+    .alert-dialog{width:min(610px,100%);max-height:min(85vh,740px);overflow-y:auto;background:#190c13;color:#fff;border:3px solid #ff4560;border-radius:16px;padding:24px;box-shadow:0 0 0 5px #ff284328,0 0 46px #ff284357;animation:urgentGlow 1.9s ease-in-out infinite}
+    .alert-dialog h2{margin:0 0 10px;color:#ff7184;font-size:clamp(22px,4vw,29px);line-height:1.2}
+    .alert-dialog p{margin:0 0 12px;color:#ffe6e9}
+    .alert-list{list-style:none;padding:0;margin:15px 0 20px;display:grid;gap:8px;max-height:38vh;overflow-y:auto}
+    .alert-list li{border:1px solid #a83a4b;border-left:5px solid #ff4560;background:#37111c;border-radius:8px;padding:10px 12px;overflow-wrap:anywhere}
+    .alert-list strong{display:block;font-size:15px;color:white}
+    .alert-list small{display:block;color:#ffd3d9;margin-top:3px;font-size:12px}
+    .alert-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .alert-actions .btn{flex:1;min-width:140px}
+    @keyframes urgentBackdrop{0%,100%{background:rgba(61,6,15,.80)}50%{background:rgba(99,8,23,.88)}}
+    @keyframes urgentGlow{0%,100%{border-color:#ff4560;box-shadow:0 0 0 4px #ff284322,0 0 22px #ff284338}50%{border-color:#ffb3bf;box-shadow:0 0 0 7px #ff284349,0 0 52px #ff284388}}
+    @keyframes urgentButton{0%,100%{box-shadow:0 0 0 0 #ff456055}50%{box-shadow:0 0 0 5px #ff456033}}
+    @media(prefers-reduced-motion:reduce){.btn-alert,.alert-overlay,.alert-dialog,.product-text.tomorrow-blink,.status.tomorrow-blink{animation:none!important}}
+    .foot{margin:16px 0;color:#92a5c0;font-size:12px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}
+    .instagram-link{color:#e8f0ff;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:5px;border:1px solid #435879;border-radius:8px;padding:6px 10px;background:#192538}
+    .instagram-link:hover,.instagram-link:focus-visible{color:#fff;background:#2c405f;text-decoration:underline}
+    .legend{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px}
+    .legend span{border:1px solid #344357;background:#121a25;padding:6px 10px;border-radius:7px;font-size:11px;font-weight:800}
+    .legend .red{color:var(--red)}.legend .purple{color:var(--purple)}.legend .orange{color:var(--orange)}.legend .yellow{color:var(--yellow)}.legend .green{color:var(--green)}.legend .normal{color:#d8e6f9}
+    .print-only{display:none}
+    .hint{margin:0 0 15px;color:#91a3bf;font-size:12px}
+    @media(max-width:900px){.stats{grid-template-columns:repeat(3,1fr)}.editor{grid-template-columns:repeat(2,minmax(0,1fr))}.sheet{min-width:750px}}
+    @media(max-width:540px){.container{width:calc(100% - 20px)}.masthead{padding-top:19px}.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.stat{padding:9px 6px}.stat .count{font-size:21px}.stat .name{font-size:10px}.editor{padding:14px;gap:10px}.editor .field:first-child,.editor .field:nth-child(4),.editor .field:last-child{grid-column:span 2}.editor-footer{padding:0 14px 15px}.panel-title{padding:13px}.note{display:none}.table-tools{padding:12px}.search{width:100%}.top-actions{width:100%}.top-actions .btn{flex:1}.foot{display:block}}
+    @media(max-width:900px){.filter-label{width:100%}.sector-filter{flex:1;min-width:0}}
+    @page{size:A4 portrait;margin:3mm}
+    @media print{
+      *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      html,body{background:white!important;color:black!important;margin:0!important;padding:0!important;font-size:10pt!important}
+      .container{width:100%!important;margin:0!important;max-width:none!important}
+      .masthead,.stats,.entry-panel,.table-tools,.foot,.legend,.hint,.row-actions,.actions-col,.screen-only,.alert-overlay{display:none!important}
+      .layout{padding:0!important}
+      .panel{background:white!important;box-shadow:none!important;border:none!important;border-radius:0!important;margin:0!important;overflow:visible!important}
+      .panel-title{display:none!important}
+      .table-scroll{overflow:visible!important}
+      .sheet{min-width:0!important;width:100%!important;table-layout:fixed;border:1px solid #182e73!important}
+      .sheet col.product{width:48%!important}.sheet col.und{width:8%!important}.sheet col.expiry{width:22%!important}.sheet col.others{width:22%!important}.sheet col.actions{display:none!important}
+      .sheet-title{background:white!important;color:#091f65!important;height:10.6mm!important;font-size:15pt!important}
+      .sheet th,.sheet td{border:1px solid #182e73!important;padding:1.4mm 1.5mm!important;overflow-wrap:anywhere}
+      .sheet thead tr.headers th{background:white!important;color:#091f65!important;height:9.2mm!important;font-size:10pt!important}
+      .sheet td,.sheet tbody tr:nth-child(even) td,.sheet tbody tr:hover td{background:white!important;color:black!important;height:8.55mm!important;font-size:10pt!important}
+      .sheet td:nth-child(4){color:black!important}
+      .sheet td:nth-child(5),.sheet th:nth-child(5){display:none!important}
+      .sheet .product-text.normal{color:black!important}.sheet .product-text.green{color:#137a41!important}.sheet .product-text.yellow{color:#9c7b00!important}.sheet .product-text.orange{color:#b14e00!important}.sheet .product-text.purple{color:#6926a4!important}.sheet .product-text.red{color:#cf172b!important}
+      .status,.days{display:none!important}
+      .product-text.tomorrow-blink,.status.tomorrow-blink{animation:none!important;opacity:1!important;filter:none!important}
+      .empty-row{display:none!important}
+      .print-only{display:table-row!important}
+      .print-only td{height:8.55mm!important}
+      thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="container topline">
+      <div>
+        <div class="eyebrow">Planilha inteligente · COM QUANTIDADE</div>
+        <h1>CONTROLE DE VALIDADE</h1>
+        <p class="subtitle">Produtos em ordem de vencimento. Os nomes mudam de cor automaticamente conforme a data.</p>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="btn btn-alert" id="urgentAlertBtn" hidden>🚨 Ver alertas</button>
+        <button type="button" class="btn btn-subtle" id="exportBtn">↓ Baixar CSV</button>
+        <button type="button" class="btn btn-primary" id="printBtn">▤ Imprimir A4</button>
+      </div>
+    </div>
+  </header>
+  <div class="alert-overlay" id="urgentOverlay" hidden>
+    <section class="alert-dialog" role="alertdialog" aria-modal="true" aria-labelledby="urgentTitle" aria-describedby="urgentDescription">
+      <h2 id="urgentTitle">🚨 ALERTA VERMELHO DE VALIDADE!</h2>
+      <p id="urgentDescription">Verifique os produtos com validade de hoje ou já vencidos:</p>
+      <ul class="alert-list" id="urgentList"></ul>
+      <div class="alert-actions">
+        <button type="button" class="btn btn-danger" id="urgentCloseBtn">✓ Entendi · Fechar</button>
+        <button type="button" class="btn btn-primary" id="urgentViewBtn">Ver produtos na lista</button>
+      </div>
+    </section>
+  </div>
+  <main class="container layout">
+    <section class="stats" aria-label="Resumo dos vencimentos">
+      <div class="stat red"><span class="count" id="count-red">0</span><span class="name">Vencidos</span></div>
+      <div class="stat purple"><span class="count" id="count-purple">0</span><span class="name">Hoje a 2 dias</span></div>
+      <div class="stat orange"><span class="count" id="count-orange">0</span><span class="name">3 a 5 dias</span></div>
+      <div class="stat yellow"><span class="count" id="count-yellow">0</span><span class="name">6 a 10 dias</span></div>
+      <div class="stat green"><span class="count" id="count-green">0</span><span class="name">11 a 15 dias</span></div>
+      <div class="stat"><span class="count" id="count-normal">0</span><span class="name">Mais de 15 dias</span></div>
+    </section>
+    <section class="panel entry-panel" id="editorPanel">
+      <div class="panel-title"><h2 id="formTitle">＋ Adicionar produto</h2><span class="note">UND: até 3 números · Ex.: 234</span></div>
+      <form id="productForm" autocomplete="off">
+        <div class="editor">
+          <div class="field"><label for="productInput">PRODUTO</label>
+            <div class="autocomplete" id="autocompleteWrap">
+              <input id="productInput" name="produto" type="text" maxlength="160" placeholder="Digite para ver nomes já cadastrados" autocomplete="off" spellcheck="true" lang="pt-BR" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="productSuggestions" required>
+              <div class="suggestions" id="productSuggestions" role="listbox" aria-label="Sugestões de nomes de produtos" hidden></div>
+            </div>
+            <small class="autocomplete-note">Sugestões com acentos: nomes salvos e exemplos de produtos em português.</small>
+          </div>
+          <div class="field"><label for="quantityInput">UND</label><input id="quantityInput" name="und" type="number" min="0" max="999" step="1" inputmode="numeric" placeholder="234" required></div>
+          <div class="field"><label for="dateInput">VALIDADE</label><input id="dateInput" name="validade" type="date" required></div>
+          <div class="field"><label for="otherInput">OUTROS</label><input id="otherInput" name="outros" type="text" maxlength="240" placeholder="Observação (opcional)"></div>
+          <div class="field"><label for="sectorInput">SETOR (OPCIONAL)</label>
+            <select id="sectorInput" name="setor">
+              <option value="">Sem setor</option>
+              <option value="PADARIA">PADARIA</option>
+              <option value="FRIOS">FRIOS</option>
+              <option value="AÇOUGUE">AÇOUGUE</option>
+              <option value="MERCEARIA">MERCEARIA</option>
+              <option value="LIMPEZA">LIMPEZA</option>
+            </select>
+          </div>
+        </div>
+        <div class="editor-footer">
+          <button type="submit" class="btn btn-primary" id="saveBtn">＋ Adicionar à lista</button>
+          <button type="button" class="btn btn-subtle cancel-hidden" id="cancelBtn">Cancelar edição</button>
+          <span id="saveStatus" class="save-text" role="status">Os dados são salvos neste navegador.</span>
+        </div>
+      </form>
+    </section>
+    <section class="panel" aria-label="Lista de produtos">
+      <div class="panel-title"><h2>Planilha · COM QUANTIDADE</h2><span class="note" id="totalLabel">0 produtos cadastrados</span></div>
+      <div class="table-tools">
+        <input class="search" id="searchInput" type="search" placeholder="⌕ Pesquisar produto ou observação" aria-label="Pesquisar produto ou observação">
+        <label class="filter-label" for="sectorFilter"><span>Setor:</span>
+          <select class="sector-filter" id="sectorFilter" aria-label="Mostrar produtos por setor">
+            <option value="TODOS">Todos os produtos</option>
+            <option value="PADARIA">PADARIA</option>
+            <option value="FRIOS">FRIOS</option>
+            <option value="AÇOUGUE">AÇOUGUE</option>
+            <option value="MERCEARIA">MERCEARIA</option>
+            <option value="LIMPEZA">LIMPEZA</option>
+            <option value="SEM_SETOR">Sem setor</option>
+          </select>
+        </label>
+        <div class="table-tools-right"><label class="check"><input type="checkbox" id="alertsOnly"> Mostrar apenas até 15 dias / vencidos</label><span>↑ Vencimento mais próximo primeiro</span></div>
+      </div>
+      <div class="table-scroll">
+        <table class="sheet" id="productTable">
+          <colgroup><col class="product"><col class="und"><col class="expiry"><col class="others"><col class="actions actions-col"></colgroup>
+          <thead>
+            <tr><th class="sheet-title" colspan="5">CONTROLE DE VALIDADE</th></tr>
+            <tr class="headers"><th scope="col">PRODUTO</th><th scope="col">UND</th><th scope="col">VALIDADE</th><th scope="col">OUTROS</th><th scope="col" class="actions-col">AÇÕES</th></tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+          <tbody id="printBlanks" aria-hidden="true"></tbody>
+        </table>
+      </div>
+    </section>
+    <p class="hint">Ordenação automática por vencimento. Selecione um setor ou “Todos os produtos”; a impressão segue a lista exibida, em quatro colunas, como na planilha.</p>
+    <div class="legend" aria-label="Legenda de cores">
+      <span class="red">● Vencido: vermelho</span>
+      <span class="purple">● Hoje até 2 dias: roxo</span>
+      <span class="orange">● 3–5 dias: laranja</span>
+      <span class="yellow">● 6–10 dias: amarelo</span>
+      <span class="green">● 11–15 dias: verde</span>
+      <span class="normal">● Mais de 15 dias: normal</span>
+    </div>
+    <div class="foot"><span>Salvamento automático neste navegador. Faça cópias pelo botão “Baixar CSV”.</span><span>Impressão: A4 em pé · margens de 3 mm · grades preservadas.</span><a class="instagram-link" href="https://www.instagram.com/wv_wellingtonviana/" target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram de Wellington Viana em uma nova aba">📷 Instagram</a></div>
+  </main>
+  <script>
+    'use strict';
+    (() => {
+      const STORAGE_KEY = 'controle_validade_und_v1'; // Chave antiga preservada: mantém os cadastros existentes.
+      const NAME_HISTORY_KEY = 'controle_validade_nomes_v1';
+      const SECTORS = ['PADARIA','FRIOS','AÇOUGUE','MERCEARIA','LIMPEZA'];
+      // Exemplos revisados manualmente: não se trata de corretor ortográfico universal.
+      const KNOWN_PRODUCTS = [
+        'Abacaxi','Abóbora','Açúcar','Açúcar cristal','Açúcar refinado','Água mineral','Alface','Alho',
+        'Amaciante','Arroz','Arroz integral','Aveia','Azeitona','Banana','Batata','Biscoito','Bolacha',
+        'Bolo de chocolate','Bolo de fubá','Café','Café em pó','Calabresa','Carne bovina','Carne moída',
+        'Cenoura','Cerveja sem álcool','Chocolate','Coco ralado','Costela bovina','Coxa de frango',
+        'Creme de leite','Desinfetante','Detergente','Ervilha','Extrato de tomate','Farinha de mandioca',
+        'Farinha de trigo','Feijão','Feijão-carioca','Feijão-preto','Fermento','Filé de frango',
+        'Frango inteiro','Iogurte','Laranja','Leite condensado','Leite em pó','Leite integral',
+        'Limão','Linguiça','Linguiça calabresa','Macarrão','Maçã','Manteiga','Margarina','Melancia',
+        'Muçarela','Óleo de soja','Ovos','Pão de forma','Pão de queijo','Pão francês','Pão integral',
+        'Papel higiênico','Peito de frango','Presunto','Queijo minas','Queijo muçarela','Queijo prato',
+        'Refrigerante','Requeijão','Sabão em pó','Sabonete','Sal','Salsicha','Suco de uva',
+        'Tomate','Uva','Vinagre'
+      ];
+      const $ = (id) => document.getElementById(id);
+      const form = $('productForm');
+      const body = $('tableBody');
+      const blanks = $('printBlanks');
+      let products = [];
+      let nameHistory = [];
+      let suggestedNames = [];
+      let activeSuggestion = -1;
+      let editingId = null;
+      let previousUrgentKeys = null;
+      let focusBeforeAlert = null;
+
+      function closeUrgentAlert() {
+        if ($('urgentOverlay').hidden) return;
+        $('urgentOverlay').hidden = true;
+        if (focusBeforeAlert && focusBeforeAlert.isConnected) focusBeforeAlert.focus();
+        focusBeforeAlert = null;
+      }
+      function openUrgentAlert() {
+        if (!$('urgentOverlay').hidden) return;
+        focusBeforeAlert = document.activeElement;
+        $('urgentOverlay').hidden = false;
+        $('urgentCloseBtn').focus();
+      }
+      function updateUrgentAlert() {
+        // 0 = vence hoje; negativo = já vencido. As duas situações exigem atenção.
+        const urgent = sortedData().filter(p => daysUntil(p.date) <= 0);
+        const keys = new Set(urgent.map(p => `${p.id}|${p.date}|${daysUntil(p.date) === 0 ? 'hoje' : 'vencido'}`));
+        const newlyUrgent = previousUrgentKeys === null ? urgent.length > 0 : [...keys].some(key => !previousUrgentKeys.has(key));
+        previousUrgentKeys = keys;
+        const todayCount = urgent.filter(p => daysUntil(p.date) === 0).length;
+        const pastCount = urgent.length - todayCount;
+        $('urgentAlertBtn').hidden = urgent.length === 0;
+        $('urgentAlertBtn').textContent = `🚨 ${urgent.length} alerta${urgent.length === 1 ? '' : 's'} · Ver produtos`;
+        $('urgentDescription').textContent = `${todayCount} produto${todayCount === 1 ? '' : 's'} vence${todayCount === 1 ? '' : 'm'} hoje e ${pastCount} já vencido${pastCount === 1 ? '' : 's'}. Confira os itens abaixo:`;
+        const list = $('urgentList');
+        list.replaceChildren();
+        urgent.forEach(p => {
+          const row = create('li');
+          row.append(create('strong',p.name),create('small',`${daysUntil(p.date) === 0 ? 'VENCE HOJE' : statusFor(daysUntil(p.date)).toLocaleUpperCase('pt-BR')} · Validade: ${formatDate(p.date)} · UND: ${p.qty}${p.other ? ' · ' + p.other : ''}`));
+          list.append(row);
+        });
+        if (!urgent.length) closeUrgentAlert();
+        else if (newlyUrgent) openUrgentAlert();
+      }
+
+      function validISO(value) {
+        if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+        const [y, m, d] = value.split('-').map(Number);
+        const date = new Date(Date.UTC(y, m - 1, d));
+        return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
+      }
+      function todayDayNumber() {
+        const d = new Date();
+        return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
+      }
+      function daysUntil(iso) {return Math.floor(Date.parse(iso + 'T00:00:00Z') / 86400000) - todayDayNumber();}
+      function colorFor(days) {
+        if (days < 0) return 'red';
+        if (days <= 2) return 'purple';
+        if (days <= 5) return 'orange';
+        if (days <= 10) return 'yellow';
+        if (days <= 15) return 'green';
+        return 'normal';
+      }
+      function statusFor(days) {
+        if (days < 0) return `Vencido há ${Math.abs(days)} dia${Math.abs(days) === 1 ? '' : 's'}`;
+        if (days === 0) return 'Vence hoje';
+        if (days === 1) return 'Vence amanhã';
+        return `Faltam ${days} dias`;
+      }
+      function formatDate(iso) {const [y,m,d] = iso.split('-'); return `${d}/${m}/${y}`;}
+      function makeId() {return `${Date.now()}-${Math.random().toString(36).slice(2,10)}`;}
+      function readData() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+          if (!Array.isArray(parsed)) return [];
+          return parsed.filter(p => p && typeof p.name === 'string' && p.name.trim() && validISO(p.date) && Number.isInteger(p.qty) && p.qty >= 0 && p.qty <= 999)
+                       .map(p => ({id:String(p.id || makeId()),name:p.name.slice(0,160),qty:p.qty,date:p.date,other:String(p.other || '').slice(0,240),sector:SECTORS.includes(p.sector) ? p.sector : ''}));
+        } catch (_) {return [];}
+      }
+      function persist() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+          localStorage.setItem(NAME_HISTORY_KEY, JSON.stringify(nameHistory));
+          $('saveStatus').textContent = '✓ Lista e nomes salvos automaticamente neste navegador.';
+        } catch (_) {$('saveStatus').textContent = '⚠ Falha ao salvar. Use “Baixar CSV” como cópia da lista.';}
+      }
+      function normalizeName(name) {
+        return String(name || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').replace(/\s+/g,' ').trim();
+      }
+      function cleanName(name) {return String(name || '').replace(/\s+/g,' ').trim();}
+      function readNameHistory() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(NAME_HISTORY_KEY) || '[]');
+          const all = [...(Array.isArray(saved) ? saved : []),...products.map(p => p.name)];
+          const known = new Set();
+          return all.filter(v => {
+            if (typeof v !== 'string' || !v.trim()) return false;
+            const k = normalizeName(v);
+            if (known.has(k)) return false;
+            known.add(k);return true;
+          }).map(cleanName);
+        } catch (_) {return [...new Set(products.map(p => p.name))];}
+      }
+      function rememberName(name) {
+        if (!nameHistory.some(n => normalizeName(n) === normalizeName(name))) nameHistory.push(name);
+      }
+      function getNames() {
+        const seen = new Set();
+        return [...KNOWN_PRODUCTS,...nameHistory,...products.map(p => p.name)].filter(n => {
+          const k = normalizeName(n);
+          if (seen.has(k)) return false;
+          seen.add(k);return true;
+        });
+      }
+      function hideSuggestions() {
+        $('productSuggestions').hidden = true;
+        $('productInput').setAttribute('aria-expanded','false');
+        $('productInput').removeAttribute('aria-activedescendant');
+        activeSuggestion = -1;
+      }
+      function markSuggestion(index) {
+        activeSuggestion = index;
+        const options = [...$('productSuggestions').querySelectorAll('.suggestion')];
+        options.forEach((el,i) => el.classList.toggle('active',i === index));
+        if (index >= 0) {
+          $('productInput').setAttribute('aria-activedescendant',options[index].id);
+          options[index].scrollIntoView({block:'nearest'});
+        } else $('productInput').removeAttribute('aria-activedescendant');
+      }
+      function chooseSuggestion(name) {
+        $('productInput').value = name;
+        hideSuggestions();$('productInput').focus();
+      }
+      function updateSuggestions() {
+        const list = $('productSuggestions');list.replaceChildren();
+        const q = normalizeName($('productInput').value);
+        if (!q) {suggestedNames = [];hideSuggestions();return;}
+        suggestedNames = getNames().filter(name => normalizeName(name).includes(q))
+          .sort((a,b) => {
+            const aStart = normalizeName(a).startsWith(q) ? 0 : 1;
+            const bStart = normalizeName(b).startsWith(q) ? 0 : 1;
+            return aStart-bStart || a.localeCompare(b,'pt-BR');
+          }).slice(0,9);
+        if (!suggestedNames.length) {hideSuggestions();return;}
+        suggestedNames.forEach((name,i) => {
+          const option = create('button',name,'suggestion');
+          option.type = 'button';option.id = `productSuggestion-${i}`;
+          option.setAttribute('role','option');
+          option.addEventListener('pointerdown',event => event.preventDefault());
+          option.addEventListener('click',() => chooseSuggestion(name));
+          list.append(option);
+        });
+        activeSuggestion = -1;list.hidden = false;$('productInput').setAttribute('aria-expanded','true');
+        $('productInput').removeAttribute('aria-activedescendant');
+      }
+      $('productInput').addEventListener('input',updateSuggestions);
+      $('productInput').addEventListener('focus',updateSuggestions);
+      $('productInput').addEventListener('keydown',event => {
+        if (event.key === 'Escape') {hideSuggestions();return;}
+        if ($('productSuggestions').hidden || !suggestedNames.length) return;
+        if (event.key === 'ArrowDown') {event.preventDefault();markSuggestion((activeSuggestion+1)%suggestedNames.length);}
+        if (event.key === 'ArrowUp') {event.preventDefault();markSuggestion(activeSuggestion <= 0 ? suggestedNames.length-1 : activeSuggestion-1);}
+        if ((event.key === 'Enter' || event.key === 'Tab') && activeSuggestion >= 0) {
+          if (event.key === 'Enter') event.preventDefault();
+          chooseSuggestion(suggestedNames[activeSuggestion]);
+        }
+      });
+      document.addEventListener('pointerdown',event => {
+        if (!$('autocompleteWrap').contains(event.target)) hideSuggestions();
+      });
+      function create(tag, text, className) {
+        const el = document.createElement(tag);
+        if (text !== undefined) el.textContent = text;
+        if (className) el.className = className;
+        return el;
+      }
+      function sortedData() {return [...products].sort((a,b) => a.date.localeCompare(b.date) || a.name.localeCompare(b.name,'pt-BR'));}
+      function sectorName() {
+        const sector = $('sectorFilter').value;
+        return sector === 'SEM_SETOR' ? 'SEM SETOR' : sector;
+      }
+      function visibleData() {
+        const search = normalizeName($('searchInput').value);
+        const alerts = $('alertsOnly').checked;
+        const sector = $('sectorFilter').value;
+        return sortedData().filter(p =>
+          (!alerts || daysUntil(p.date) <= 15) &&
+          (sector === 'TODOS' || (sector === 'SEM_SETOR' ? !p.sector : p.sector === sector)) &&
+          (!search || normalizeName(`${p.name} ${p.other} ${p.qty} ${formatDate(p.date)} ${p.sector}`).includes(search))
+        );
+      }
+      function render() {
+        const counts = {red:0,purple:0,orange:0,yellow:0,green:0,normal:0};
+        products.forEach(p => counts[colorFor(daysUntil(p.date))]++);
+        for (const [color,count] of Object.entries(counts)) $(`count-${color}`).textContent = count;
+        const visible = visibleData();
+        $('totalLabel').textContent = `${visible.length} exibido${visible.length === 1 ? '' : 's'} de ${products.length} produto${products.length === 1 ? '' : 's'}`;
+        document.querySelector('.sheet-title').textContent = $('sectorFilter').value === 'TODOS' ? 'CONTROLE DE VALIDADE' : `CONTROLE DE VALIDADE — ${sectorName()}`;
+        body.replaceChildren();
+        if (!visible.length) {
+          const tr = create('tr',undefined,'empty-row');
+          const td = create('td', products.length ? 'Nenhum produto encontrado com esse filtro.' : 'Lista vazia. Cadastre o primeiro produto acima.', 'empty-state');
+          td.colSpan = 5;tr.append(td);body.append(tr);
+        }
+        visible.forEach(p => {
+          const days = daysUntil(p.date);
+          const color = colorFor(days);
+          const tr = create('tr');
+          const nameCell = create('td');
+          // Amanhã: pisca o nome do produto e o selo "Vence amanhã". Outros dias não piscam.
+          const tomorrowClass = days === 1 ? ' tomorrow-blink' : '';
+          nameCell.append(create('span',p.name,`product-text ${color}${tomorrowClass}`),create('span',statusFor(days),`status ${color}${tomorrowClass}`));
+          if (p.sector) nameCell.append(create('span',p.sector,'days'));
+          const qtyCell = create('td',String(p.qty));
+          const dateCell = create('td');
+          dateCell.append(create('span',formatDate(p.date)),create('span',statusFor(days),'days'));
+          const otherCell = create('td',p.other);
+          const actionCell = create('td');actionCell.className = 'actions-col';
+          const actions = create('div',undefined,'row-actions');
+          const edit = create('button','✎','icon-btn');edit.type = 'button';edit.title = `Editar ${p.name}`;edit.setAttribute('aria-label',edit.title);
+          edit.addEventListener('click',() => startEdit(p.id));
+          const del = create('button','×','icon-btn delete');del.type = 'button';del.title = `Excluir ${p.name}`;del.setAttribute('aria-label',del.title);
+          del.addEventListener('click',() => removeItem(p.id));
+          actions.append(edit,del);actionCell.append(actions);
+          tr.append(nameCell,qtyCell,dateCell,otherCell,actionCell);body.append(tr);
+        });
+        // A impressão completa a primeira folha com linhas em branco, mantendo o aspecto da planilha A4.
+        blanks.replaceChildren();
+        const needed = visible.length ? (31 - visible.length % 31) % 31 : 31;
+        for (let i=0;i<needed;i++) {
+          const tr = create('tr',undefined,'print-only');
+          for (let c=0;c<4;c++) tr.append(create('td','\u00a0'));
+          blanks.append(tr);
+        }
+        updateUrgentAlert();
+      }
+      function resetForm() {
+        editingId = null;form.reset();hideSuggestions();$('formTitle').textContent = '＋ Adicionar produto';
+        $('saveBtn').textContent = '＋ Adicionar à lista';$('cancelBtn').classList.add('cancel-hidden');
+      }
+      function startEdit(id) {
+        const p = products.find(item => item.id === id);if (!p) return;
+        editingId = id;
+        $('productInput').value = p.name;$('quantityInput').value = p.qty;$('dateInput').value = p.date;$('otherInput').value = p.other;$('sectorInput').value = p.sector || '';
+        $('formTitle').textContent = '✎ Editar produto';$('saveBtn').textContent = '✓ Salvar alterações';$('cancelBtn').classList.remove('cancel-hidden');
+        $('editorPanel').scrollIntoView({behavior:'smooth',block:'start'});$('productInput').focus({preventScroll:true});
+      }
+      function removeItem(id) {
+        const p = products.find(item => item.id === id);if (!p || !confirm(`Excluir “${p.name}” da lista?`)) return;
+        products = products.filter(item => item.id !== id);
+        if (editingId === id) resetForm();persist();render();
+      }
+      form.addEventListener('submit',(event) => {
+        event.preventDefault();
+        const rawName = cleanName($('productInput').value);
+        const canonical = getNames().find(n => normalizeName(n) === normalizeName(rawName));
+        const name = canonical || rawName;const qty = Number($('quantityInput').value);const date = $('dateInput').value;
+        if (!name || !Number.isInteger(qty) || qty < 0 || qty > 999 || !validISO(date)) {alert('Preencha PRODUTO, UND (número inteiro de 0 a 999) e uma data de VALIDADE válida.');return;}
+        const item = {id:editingId || makeId(),name,qty,date,other:$('otherInput').value.trim(),sector:$('sectorInput').value};
+        if (editingId) {products = products.map(p => p.id === editingId ? item : p);} else {products.push(item);}
+        rememberName(name);resetForm();persist();render();$('productInput').focus();
+      });
+      $('urgentCloseBtn').addEventListener('click',closeUrgentAlert);
+      $('urgentAlertBtn').addEventListener('click',openUrgentAlert);
+      $('urgentViewBtn').addEventListener('click',() => {
+        closeUrgentAlert();
+        $('searchInput').value = '';
+        $('alertsOnly').checked = false;
+        $('sectorFilter').value = 'TODOS';
+        render();
+        $('productTable').scrollIntoView({behavior:'smooth',block:'start'});
+      });
+      document.addEventListener('keydown',(event) => {if (event.key === 'Escape' && !$('urgentOverlay').hidden) closeUrgentAlert();});
+      $('cancelBtn').addEventListener('click',resetForm);
+      $('searchInput').addEventListener('input',render);
+      $('alertsOnly').addEventListener('change',render);
+      $('sectorFilter').addEventListener('change',render);
+      const titleCell = document.querySelector('.sheet-title');
+      window.addEventListener('beforeprint',() => {titleCell.colSpan = 4;render();});
+      window.addEventListener('afterprint',() => {titleCell.colSpan = 5;});
+      $('printBtn').addEventListener('click',() => window.print());
+      function safeCsv(value) {
+        let s = String(value ?? '');
+        if (/^[\s]*[=+\-@]/.test(s)) s = "'" + s;
+        return '"' + s.replaceAll('"','""') + '"';
+      }
+      $('exportBtn').addEventListener('click',() => {
+        const rows = [['PRODUTO','UND','VALIDADE','OUTROS','SETOR'],...sortedData().map(p => [p.name,p.qty,formatDate(p.date),p.other,p.sector || ''])];
+        const csv = '\ufeff' + rows.map(row => row.map(safeCsv).join(';')).join('\r\n');
+        const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+        const a = create('a');a.href = url;a.download = 'CONTROLE_DE_VALIDADE_COM_QUANTIDADE.csv';document.body.append(a);a.click();a.remove();
+        setTimeout(() => URL.revokeObjectURL(url),2000);
+      });
+      products = readData();nameHistory = readNameHistory();render();
+      window.addEventListener('focus',render);
+      document.addEventListener('visibilitychange',() => {if (!document.hidden) render();});
+      setInterval(() => {if (!document.hidden) render();},60000); // Detecta a virada do dia enquanto a página está aberta.
+    })();
+  </script>
+</body>
+</html>
