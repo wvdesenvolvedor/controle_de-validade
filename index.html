@@ -22,6 +22,8 @@
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #3b4c63;border-radius:9px;padding:11px 15px;background:#1b2635;color:white;font-weight:700;min-height:42px;transition:filter .16s,background .16s}
     .btn:hover{filter:brightness(1.18)}
     .btn-primary{background:#2366df;border-color:#3575ef}
+    .import-mode{min-height:42px;max-width:195px;border:1px solid #3b4c63;background:#172535;color:#fff;border-radius:9px;padding:8px 10px;font-weight:700;font-size:12px}
+    .import-mode:focus-visible{outline:2px solid #74a6ff;outline-offset:2px}
     .btn-subtle{background:transparent;color:#d0d9e8}
     .btn-danger{background:#4c2029;border-color:#813441;color:#ffcbd1}
     .layout{padding:23px 0 38px}
@@ -39,6 +41,7 @@
     .field input,.field select,.search,.sector-filter{outline:none;border:1px solid #394b62;background:#090f18;color:white;border-radius:8px;padding:11px 12px;width:100%;min-height:43px}
     .field input:focus,.field select:focus,.search:focus,.sector-filter:focus{border-color:#6aa0ff;box-shadow:0 0 0 3px #4285ff22}
     .field input::placeholder,.search::placeholder{color:#75859b}
+     #productInput{text-transform:uppercase}
     .entry-panel{overflow:visible;position:relative;z-index:5}
     .entry-panel .panel-title{border-radius:14px 14px 0 0}
     .autocomplete{position:relative}
@@ -70,14 +73,25 @@
     .sheet tbody tr:hover td{background:#1b2b40}
     .sheet td:nth-child(2),.sheet td:nth-child(3){text-align:center;font-variant-numeric:tabular-nums}
     .sheet td:nth-child(4){color:#cad5e5}
-    .product-text{font-weight:800;letter-spacing:.1px;word-break:break-word}
+    .product-text{font-weight:800;letter-spacing:.1px;word-break:break-word;font-size:15px;line-height:1.2}
     .product-text.normal{color:var(--white)}.product-text.green{color:var(--green)}.product-text.yellow{color:var(--yellow)}.product-text.orange{color:var(--orange)}.product-text.purple{color:var(--purple)}.product-text.red{color:var(--red)}
-    .status{display:inline-flex;font-size:10px;font-weight:800;margin-left:8px;border-radius:5px;padding:2px 5px;border:1px solid currentColor;vertical-align:middle;white-space:nowrap}
+    .status{display:inline-flex;font-size:11px;font-weight:900;margin-left:8px;border-radius:5px;padding:3px 7px;border:1px solid currentColor;vertical-align:middle;white-space:nowrap;text-transform:uppercase}
     .status.normal{color:#b8c9e2}.status.green{color:var(--green)}.status.yellow{color:var(--yellow)}.status.orange{color:var(--orange)}.status.purple{color:var(--purple)}.status.red{color:var(--red)}
     /* Destaque na linha do produto quando a validade é amanhã (exatamente 1 dia). */
     .product-text.tomorrow-blink,.status.tomorrow-blink{animation:tomorrowBlink 1.15s ease-in-out infinite}
     @keyframes tomorrowBlink{0%,100%{opacity:1;filter:brightness(1)}50%{opacity:.23;filter:brightness(1.5)}}
+    /* Destaque vermelho piscando para VENCE HOJE e vencidos, parecido com o alerta. */
+    .product-text.urgent-highlight,.status.urgent-highlight,.days.urgent-highlight,.date-main.urgent-highlight,.date-note.urgent-highlight{color:#ff7e92!important}
+    .product-text.urgent-highlight,.status.urgent-highlight,.date-main.urgent-highlight,.date-note.urgent-highlight{animation:urgentRowBlink 1.05s ease-in-out infinite}
+    .product-text.urgent-highlight{font-size:17px;font-weight:900}
+    .status.urgent-highlight{font-size:12px;background:#4c1620;border-color:#ff6f85;box-shadow:0 0 0 1px #ff40531f}
+    .date-main{display:block;font-size:14px;font-weight:800;line-height:1.2}
+    .date-note{display:block;color:#94a6c1;font-size:11px;margin-top:3px}
+    .date-main.urgent-highlight{font-size:17px;font-weight:900}
+    .date-note.urgent-highlight{font-size:12px;font-weight:800;text-transform:uppercase}
+    @keyframes urgentRowBlink{0%,100%{opacity:1;filter:brightness(1)}50%{opacity:.38;filter:brightness(1.55)}}
     .days{display:block;color:#94a6c1;font-size:11px;margin-top:2px}
+    .days.urgent-highlight{font-size:12px;font-weight:800}
     .row-actions{display:flex;justify-content:center;gap:4px}
     .icon-btn{background:#22334a;border:1px solid #3f5573;color:#dfe9f8;border-radius:6px;min-width:29px;height:30px;padding:0 5px;font-size:14px}
     .icon-btn:hover{background:#354d6c}.icon-btn.delete:hover{background:#6c2737;color:white}
@@ -91,14 +105,19 @@
     .alert-dialog p{margin:0 0 12px;color:#ffe6e9}
     .alert-list{list-style:none;padding:0;margin:15px 0 20px;display:grid;gap:8px;max-height:38vh;overflow-y:auto}
     .alert-list li{border:1px solid #a83a4b;border-left:5px solid #ff4560;background:#37111c;border-radius:8px;padding:10px 12px;overflow-wrap:anywhere}
-    .alert-list strong{display:block;font-size:15px;color:white}
-    .alert-list small{display:block;color:#ffd3d9;margin-top:3px;font-size:12px}
+    .alert-list strong{display:block;font-size:18px;color:white}
+    .alert-list small{display:block;color:#ffd3d9;margin-top:5px;font-size:14px}
+    .alert-list .alert-status{display:block;color:#ff9cab;font-size:16px;font-weight:900;letter-spacing:.3px;text-transform:uppercase}
+    /* Destaque mais equilibrado para a DATA DE VALIDADE no alerta vermelho. */
+    .alert-list .alert-date{display:block;color:#ff93a3;font-size:clamp(28px,5.1vw,38px);font-weight:900;line-height:1.12;letter-spacing:.35px;font-variant-numeric:tabular-nums;margin:4px 0 2px;white-space:nowrap}
+    .alert-list .alert-date-label{display:block;color:#ffced6;font-size:16px;font-weight:900;margin-top:6px}
+    .alert-list .alert-product-extra{display:block;color:#ffd3d9;font-size:14px;font-weight:700}
     .alert-actions{display:flex;gap:10px;flex-wrap:wrap}
     .alert-actions .btn{flex:1;min-width:140px}
     @keyframes urgentBackdrop{0%,100%{background:rgba(61,6,15,.80)}50%{background:rgba(99,8,23,.88)}}
     @keyframes urgentGlow{0%,100%{border-color:#ff4560;box-shadow:0 0 0 4px #ff284322,0 0 22px #ff284338}50%{border-color:#ffb3bf;box-shadow:0 0 0 7px #ff284349,0 0 52px #ff284388}}
     @keyframes urgentButton{0%,100%{box-shadow:0 0 0 0 #ff456055}50%{box-shadow:0 0 0 5px #ff456033}}
-    @media(prefers-reduced-motion:reduce){.btn-alert,.alert-overlay,.alert-dialog,.product-text.tomorrow-blink,.status.tomorrow-blink{animation:none!important}}
+    @media(prefers-reduced-motion:reduce){.btn-alert,.alert-overlay,.alert-dialog,.product-text.tomorrow-blink,.status.tomorrow-blink,.product-text.urgent-highlight,.status.urgent-highlight,.date-main.urgent-highlight,.date-note.urgent-highlight{animation:none!important}}
     .foot{margin:16px 0;color:#92a5c0;font-size:12px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}
     .instagram-link{color:#e8f0ff;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:5px;border:1px solid #435879;border-radius:8px;padding:6px 10px;background:#192538}
     .instagram-link:hover,.instagram-link:focus-visible{color:#fff;background:#2c405f;text-decoration:underline}
@@ -108,10 +127,11 @@
     .print-only{display:none}
     .hint{margin:0 0 15px;color:#91a3bf;font-size:12px}
     @media(max-width:900px){.stats{grid-template-columns:repeat(3,1fr)}.editor{grid-template-columns:repeat(2,minmax(0,1fr))}.sheet{min-width:750px}}
-    @media(max-width:540px){.container{width:calc(100% - 20px)}.masthead{padding-top:19px}.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.stat{padding:9px 6px}.stat .count{font-size:21px}.stat .name{font-size:10px}.editor{padding:14px;gap:10px}.editor .field:first-child,.editor .field:nth-child(4),.editor .field:last-child{grid-column:span 2}.editor-footer{padding:0 14px 15px}.panel-title{padding:13px}.note{display:none}.table-tools{padding:12px}.search{width:100%}.top-actions{width:100%}.top-actions .btn{flex:1}.foot{display:block}}
+    @media(max-width:540px){.top-actions .import-mode{flex:1;max-width:none;width:100%}.container{width:calc(100% - 20px)}.masthead{padding-top:19px}.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.stat{padding:9px 6px}.stat .count{font-size:21px}.stat .name{font-size:10px}.editor{padding:14px;gap:10px}.editor .field:first-child,.editor .field:nth-child(4),.editor .field:last-child{grid-column:span 2}.editor-footer{padding:0 14px 15px}.panel-title{padding:13px}.note{display:none}.table-tools{padding:12px}.search{width:100%}.top-actions{width:100%}.top-actions .btn{flex:1}.foot{display:block}}
     @media(max-width:900px){.filter-label{width:100%}.sector-filter{flex:1;min-width:0}}
     @page{size:A4 portrait;margin:3mm}
     @media print{
+      .import-mode,#importFile{display:none!important}
       *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
       html,body{background:white!important;color:black!important;margin:0!important;padding:0!important;font-size:10pt!important}
       .container{width:100%!important;margin:0!important;max-width:none!important}
@@ -130,7 +150,7 @@
       .sheet td:nth-child(5),.sheet th:nth-child(5){display:none!important}
       .sheet .product-text.normal{color:black!important}.sheet .product-text.green{color:#137a41!important}.sheet .product-text.yellow{color:#9c7b00!important}.sheet .product-text.orange{color:#b14e00!important}.sheet .product-text.purple{color:#6926a4!important}.sheet .product-text.red{color:#cf172b!important}
       .status,.days{display:none!important}
-      .product-text.tomorrow-blink,.status.tomorrow-blink{animation:none!important;opacity:1!important;filter:none!important}
+      .product-text.tomorrow-blink,.status.tomorrow-blink,.product-text.urgent-highlight,.status.urgent-highlight,.date-main.urgent-highlight,.date-note.urgent-highlight{animation:none!important;opacity:1!important;filter:none!important}
       .empty-row{display:none!important}
       .print-only{display:table-row!important}
       .print-only td{height:8.55mm!important}
@@ -148,7 +168,14 @@
       </div>
       <div class="top-actions">
         <button type="button" class="btn btn-alert" id="urgentAlertBtn" hidden>🚨 Ver alertas</button>
-        <button type="button" class="btn btn-subtle" id="exportBtn">↓ Baixar CSV</button>
+        <button type="button" class="btn btn-primary" id="exportBtn" title="Excel com colunas largas, datas visíveis e bordas">↓ Baixar Excel formatado</button>
+        <button type="button" class="btn btn-subtle" id="exportCsvBtn" title="Cópia em CSV sem formatação">↓ CSV simples</button>
+        <button type="button" class="btn btn-primary" id="importBtn">↑ Importar arquivo</button>
+        <select class="import-mode" id="importMode" aria-label="Modo de importação">
+          <option value="merge">Adicionar sem duplicar</option>
+          <option value="replace">Substituir lista atual</option>
+        </select>
+        <input type="file" id="importFile" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden aria-label="Escolher arquivo CSV ou Excel XLSX">
         <button type="button" class="btn btn-primary" id="printBtn">▤ Imprimir A4</button>
       </div>
     </div>
@@ -182,7 +209,7 @@
               <input id="productInput" name="produto" type="text" maxlength="160" placeholder="Digite para ver nomes já cadastrados" autocomplete="off" spellcheck="true" lang="pt-BR" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="productSuggestions" required>
               <div class="suggestions" id="productSuggestions" role="listbox" aria-label="Sugestões de nomes de produtos" hidden></div>
             </div>
-            <small class="autocomplete-note">Sugestões com acentos: nomes salvos e exemplos de produtos em português.</small>
+            <small class="autocomplete-note">Digite em minúsculas ou maiúsculas: os produtos ficam em MAIÚSCULAS e os nomes novos são lembrados neste navegador.</small>
           </div>
           <div class="field"><label for="quantityInput">UND</label><input id="quantityInput" name="und" type="number" min="0" max="999" step="1" inputmode="numeric" placeholder="234" required></div>
           <div class="field"><label for="dateInput">VALIDADE</label><input id="dateInput" name="validade" type="date" required></div>
@@ -243,7 +270,7 @@
       <span class="green">● 11–15 dias: verde</span>
       <span class="normal">● Mais de 15 dias: normal</span>
     </div>
-    <div class="foot"><span>Salvamento automático neste navegador. Faça cópias pelo botão “Baixar CSV”.</span><span>Impressão: A4 em pé · margens de 3 mm · grades preservadas.</span><a class="instagram-link" href="https://www.instagram.com/wv_wellingtonviana/" target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram de Wellington Viana em uma nova aba">📷 Instagram</a></div>
+    <div class="foot"><span>Salvamento automático neste navegador. Faça cópias pelo botão “Baixar Excel formatado” ou em CSV.</span><span>Impressão: A4 em pé · margens de 3 mm · grades preservadas.</span><a class="instagram-link" href="https://www.instagram.com/wv_wellingtonviana/" target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram de Wellington Viana em uma nova aba">📷 Instagram</a></div>
   </main>
   <script>
     'use strict';
@@ -261,11 +288,11 @@
         'Farinha de trigo','Feijão','Feijão-carioca','Feijão-preto','Fermento','Filé de frango',
         'Frango inteiro','Iogurte','Laranja','Leite condensado','Leite em pó','Leite integral',
         'Limão','Linguiça','Linguiça calabresa','Macarrão','Maçã','Manteiga','Margarina','Melancia',
-        'Muçarela','Óleo de soja','Ovos','Pão de forma','Pão de queijo','Pão francês','Pão integral',
+        'Muçarela','Mussarela','Mortadela','Mortadela Marba','Mortadela Ouro','Apresuntado','Apresuntado Sadia','Presunto Sadia','Peito de peru','Peito de peru defumado','Requeijão cremoso','Queijo parmesão','Queijo provolone','Óleo de soja','Ovos','Pão de forma','Pão de queijo','Pão francês','Pão integral',
         'Papel higiênico','Peito de frango','Presunto','Queijo minas','Queijo muçarela','Queijo prato',
         'Refrigerante','Requeijão','Sabão em pó','Sabonete','Sal','Salsicha','Suco de uva',
         'Tomate','Uva','Vinagre'
-      ];
+      ].map(name => name.toLocaleUpperCase('pt-BR'));
       const $ = (id) => document.getElementById(id);
       const form = $('productForm');
       const body = $('tableBody');
@@ -305,7 +332,14 @@
         list.replaceChildren();
         urgent.forEach(p => {
           const row = create('li');
-          row.append(create('strong',p.name),create('small',`${daysUntil(p.date) === 0 ? 'VENCE HOJE' : statusFor(daysUntil(p.date)).toLocaleUpperCase('pt-BR')} · Validade: ${formatDate(p.date)} · UND: ${p.qty}${p.other ? ' · ' + p.other : ''}`));
+          const details = create('small');
+          details.append(
+            create('span',daysUntil(p.date) === 0 ? 'VENCE HOJE' : statusFor(daysUntil(p.date)).toLocaleUpperCase('pt-BR'),'alert-status'),
+            create('span','VALIDADE:','alert-date-label'),
+            create('span',formatDate(p.date),'alert-date'),
+            create('span',`UND: ${p.qty}${p.other ? ' · ' + p.other : ''}`,'alert-product-extra')
+          );
+          row.append(create('strong',p.name),details);
           list.append(row);
         });
         if (!urgent.length) closeUrgentAlert();
@@ -344,7 +378,7 @@
           const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
           if (!Array.isArray(parsed)) return [];
           return parsed.filter(p => p && typeof p.name === 'string' && p.name.trim() && validISO(p.date) && Number.isInteger(p.qty) && p.qty >= 0 && p.qty <= 999)
-                       .map(p => ({id:String(p.id || makeId()),name:p.name.slice(0,160),qty:p.qty,date:p.date,other:String(p.other || '').slice(0,240),sector:SECTORS.includes(p.sector) ? p.sector : ''}));
+                       .map(p => ({id:String(p.id || makeId()),name:uppercaseName(p.name).slice(0,160),qty:p.qty,date:p.date,other:String(p.other || '').slice(0,240),sector:SECTORS.includes(p.sector) ? p.sector : ''}));
         } catch (_) {return [];}
       }
       function persist() {
@@ -358,6 +392,7 @@
         return String(name || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').replace(/\s+/g,' ').trim();
       }
       function cleanName(name) {return String(name || '').replace(/\s+/g,' ').trim();}
+      function uppercaseName(name) {return cleanName(name).toLocaleUpperCase('pt-BR');}
       function readNameHistory() {
         try {
           const saved = JSON.parse(localStorage.getItem(NAME_HISTORY_KEY) || '[]');
@@ -368,11 +403,12 @@
             const k = normalizeName(v);
             if (known.has(k)) return false;
             known.add(k);return true;
-          }).map(cleanName);
+          }).map(uppercaseName);
         } catch (_) {return [...new Set(products.map(p => p.name))];}
       }
       function rememberName(name) {
-        if (!nameHistory.some(n => normalizeName(n) === normalizeName(name))) nameHistory.push(name);
+        const upper = uppercaseName(name);
+        if (upper && !nameHistory.some(n => normalizeName(n) === normalizeName(upper))) nameHistory.push(upper);
       }
       function getNames() {
         const seen = new Set();
@@ -398,7 +434,7 @@
         } else $('productInput').removeAttribute('aria-activedescendant');
       }
       function chooseSuggestion(name) {
-        $('productInput').value = name;
+        $('productInput').value = uppercaseName(name);
         hideSuggestions();$('productInput').focus();
       }
       function updateSuggestions() {
@@ -423,7 +459,26 @@
         activeSuggestion = -1;list.hidden = false;$('productInput').setAttribute('aria-expanded','true');
         $('productInput').removeAttribute('aria-activedescendant');
       }
-      $('productInput').addEventListener('input',updateSuggestions);
+      $('productInput').addEventListener('input',event => {
+        if (event.isComposing) return;
+        const input = $('productInput');
+        const oldValue = input.value;
+        const upper = oldValue.toLocaleUpperCase('pt-BR');
+        if (upper !== oldValue) {
+          const start = input.selectionStart;
+          const end = input.selectionEnd;
+          input.value = upper;
+          if (start !== null && end !== null) {
+            input.setSelectionRange(oldValue.slice(0,start).toLocaleUpperCase('pt-BR').length,
+                                    oldValue.slice(0,end).toLocaleUpperCase('pt-BR').length);
+          }
+        }
+        updateSuggestions();
+      });
+      $('productInput').addEventListener('compositionend',() => {
+        $('productInput').value = $('productInput').value.toLocaleUpperCase('pt-BR');
+        updateSuggestions();
+      });
       $('productInput').addEventListener('focus',updateSuggestions);
       $('productInput').addEventListener('keydown',event => {
         if (event.key === 'Escape') {hideSuggestions();return;}
@@ -477,13 +532,21 @@
           const color = colorFor(days);
           const tr = create('tr');
           const nameCell = create('td');
-          // Amanhã: pisca o nome do produto e o selo "Vence amanhã". Outros dias não piscam.
+          // Amanhã: pisca o nome do produto e o selo "Vence amanhã". Produtos vencendo hoje ou já vencidos piscam em vermelho igual ao alerta.
           const tomorrowClass = days === 1 ? ' tomorrow-blink' : '';
-          nameCell.append(create('span',p.name,`product-text ${color}${tomorrowClass}`),create('span',statusFor(days),`status ${color}${tomorrowClass}`));
-          if (p.sector) nameCell.append(create('span',p.sector,'days'));
+          const urgentClass = days <= 0 ? ' urgent-highlight' : '';
+          const statusText = statusFor(days).toLocaleUpperCase('pt-BR');
+          nameCell.append(
+            create('span',p.name,`product-text ${color}${tomorrowClass}${urgentClass}`),
+            create('span',statusText,`status ${color}${tomorrowClass}${urgentClass}`)
+          );
+          if (p.sector) nameCell.append(create('span',p.sector,`days${urgentClass}`));
           const qtyCell = create('td',String(p.qty));
           const dateCell = create('td');
-          dateCell.append(create('span',formatDate(p.date)),create('span',statusFor(days),'days'));
+          dateCell.append(
+            create('span',formatDate(p.date),`date-main${urgentClass}`),
+            create('span',statusText,`date-note${urgentClass}`)
+          );
           const otherCell = create('td',p.other);
           const actionCell = create('td');actionCell.className = 'actions-col';
           const actions = create('div',undefined,'row-actions');
@@ -522,9 +585,9 @@
       }
       form.addEventListener('submit',(event) => {
         event.preventDefault();
-        const rawName = cleanName($('productInput').value);
+        const rawName = uppercaseName($('productInput').value);
         const canonical = getNames().find(n => normalizeName(n) === normalizeName(rawName));
-        const name = canonical || rawName;const qty = Number($('quantityInput').value);const date = $('dateInput').value;
+        const name = uppercaseName(canonical || rawName);const qty = Number($('quantityInput').value);const date = $('dateInput').value;
         if (!name || !Number.isInteger(qty) || qty < 0 || qty > 999 || !validISO(date)) {alert('Preencha PRODUTO, UND (número inteiro de 0 a 999) e uma data de VALIDADE válida.');return;}
         const item = {id:editingId || makeId(),name,qty,date,other:$('otherInput').value.trim(),sector:$('sectorInput').value};
         if (editingId) {products = products.map(p => p.id === editingId ? item : p);} else {products.push(item);}
@@ -554,14 +617,350 @@
         if (/^[\s]*[=+\-@]/.test(s)) s = "'" + s;
         return '"' + s.replaceAll('"','""') + '"';
       }
-      $('exportBtn').addEventListener('click',() => {
+      // CSV continua disponível como alternativa simples e para importações antigas.
+      $('exportCsvBtn').addEventListener('click',() => {
         const rows = [['PRODUTO','UND','VALIDADE','OUTROS','SETOR'],...sortedData().map(p => [p.name,p.qty,formatDate(p.date),p.other,p.sector || ''])];
         const csv = '\ufeff' + rows.map(row => row.map(safeCsv).join(';')).join('\r\n');
         const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
         const a = create('a');a.href = url;a.download = 'CONTROLE_DE_VALIDADE_COM_QUANTIDADE.csv';document.body.append(a);a.click();a.remove();
         setTimeout(() => URL.revokeObjectURL(url),2000);
       });
-      products = readData();nameHistory = readNameHistory();render();
+      // Exportação XLSX REAL, formatada e totalmente off-line (sem bibliotecas externas).
+      // CSV não consegue guardar larguras, alturas, datas formatadas ou bordas;
+      // por isso o botão principal baixa um arquivo Excel .xlsx com essas propriedades.
+      function escapeXlsxXml(value) {
+        return String(value ?? '')
+          .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'')
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+      }
+      function makeXlsxZip(entries) {
+        // ZIP sem compactação: Excel abre normalmente, e o próprio importador também.
+        const encoder=new TextEncoder(), chunks=[], central=[];
+        const crcTable=new Uint32Array(256);
+        for (let n=0;n<256;n++) {
+          let c=n;
+          for (let i=0;i<8;i++) c=(c&1) ? (0xedb88320^(c>>>1)) : (c>>>1);
+          crcTable[n]=c>>>0;
+        }
+        const crc32=bytes => {
+          let c=0xffffffff;
+          for (const b of bytes) c=crcTable[(c^b)&255]^(c>>>8);
+          return (c^0xffffffff)>>>0;
+        };
+        let offset=0;
+        for (const [name,xml] of entries) {
+          const fileName=encoder.encode(name), bytes=encoder.encode(xml), checksum=crc32(bytes);
+          const local=new Uint8Array(30+fileName.length), a=new DataView(local.buffer);
+          a.setUint32(0,0x04034b50,true);a.setUint16(4,20,true);
+          a.setUint16(6,0x0800,true);a.setUint16(8,0,true);
+          a.setUint16(10,0,true);a.setUint16(12,0x0021,true);
+          a.setUint32(14,checksum,true);a.setUint32(18,bytes.length,true);
+          a.setUint32(22,bytes.length,true);a.setUint16(26,fileName.length,true);
+          local.set(fileName,30);
+          chunks.push(local,bytes);
+          const directory=new Uint8Array(46+fileName.length), d=new DataView(directory.buffer);
+          d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);
+          d.setUint16(6,20,true);d.setUint16(8,0x0800,true);
+          d.setUint16(10,0,true);d.setUint16(12,0,true);d.setUint16(14,0x0021,true);
+          d.setUint32(16,checksum,true);d.setUint32(20,bytes.length,true);
+          d.setUint32(24,bytes.length,true);d.setUint16(28,fileName.length,true);
+          d.setUint32(42,offset,true);directory.set(fileName,46);
+          central.push(directory);offset+=local.length+bytes.length;
+        }
+        const centralSize=central.reduce((total,bytes)=>total+bytes.length,0);
+        const end=new Uint8Array(22),e=new DataView(end.buffer);
+        e.setUint32(0,0x06054b50,true);e.setUint16(8,entries.length,true);
+        e.setUint16(10,entries.length,true);e.setUint32(12,centralSize,true);
+        e.setUint32(16,offset,true);
+        return new Blob([...chunks,...central,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      }
+      function createFormattedXlsx(data) {
+        const ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+        const xmlHeader='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+        const label=['PRODUTO','UND','VALIDADE','OUTROS','SETOR'];
+        const textCell=(col,row,value,style)=>`<c r="${col}${row}" s="${style}" t="inlineStr"><is><t xml:space="preserve">${escapeXlsxXml(value)}</t></is></c>`;
+        const numCell=(col,row,value,style)=>`<c r="${col}${row}" s="${style}"><v>${value}</v></c>`;
+        const header=`<row r="1" ht="33" customHeight="1">${label.map((v,i)=>textCell('ABCDE'[i],1,v,1)).join('')}</row>`;
+        const dataRows=data.map((p,i)=>{
+          const row=i+2, days=daysUntil(p.date), due=days<=0, tomorrow=days===1;
+          const textStyle=due ? 6 : tomorrow ? 8 : i%2 ? 3 : 2;
+          const dateStyle=due ? 7 : tomorrow ? 9 : i%2 ? 5 : 4;
+          const qtyStyle=due ? 12 : tomorrow ? 13 : i%2 ? 11 : 10;
+          const excelSerial=Math.round((Date.parse(p.date+'T00:00:00Z')-Date.UTC(1899,11,30))/86400000);
+          // Linhas altas e quebra de texto impedem cortes em nomes ou observações compridos.
+          const textLines=Math.max(Math.ceil(p.name.length/40),Math.ceil((p.other||'').length/39),Math.ceil((p.sector||'').length/20),1);
+          const height=Math.min(90,Math.max(28,textLines*18+9));
+          return `<row r="${row}" ht="${height}" customHeight="1">`+
+            textCell('A',row,p.name,textStyle)+numCell('B',row,p.qty,qtyStyle)+
+            numCell('C',row,excelSerial,dateStyle)+textCell('D',row,p.other||'',textStyle)+
+            textCell('E',row,p.sector||'',textStyle)+'</row>';
+        }).join('');
+        const lastRow=Math.max(2,data.length+1);
+        const worksheet=xmlHeader+`<worksheet xmlns="${ns}">`+
+          '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>'+
+          `<dimension ref="A1:E${lastRow}"/>`+
+          '<sheetViews><sheetView workbookViewId="0" showGridLines="0">'+
+          '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>'+
+          '<selection pane="bottomLeft" activeCell="A2" sqref="A2"/>'+
+          '</sheetView></sheetViews><sheetFormatPr defaultRowHeight="24"/>'+
+          // Largura em caracteres Excel: nunca deixar a validade com #######.
+          '<cols><col min="1" max="1" width="44" customWidth="1"/>'+
+          '<col min="2" max="2" width="12" customWidth="1"/>'+
+          '<col min="3" max="3" width="20" customWidth="1"/>'+
+          '<col min="4" max="4" width="44" customWidth="1"/>'+
+          '<col min="5" max="5" width="23" customWidth="1"/></cols>'+
+          `<sheetData>${header}${dataRows}</sheetData>`+
+          (data.length ? `<autoFilter ref="A1:E${lastRow}"/>` : '')+
+          '<printOptions horizontalCentered="1"/>'+
+          '<pageMargins left="0.23" right="0.23" top="0.35" bottom="0.35" header="0.15" footer="0.15"/>'+
+          '<pageSetup paperSize="9" orientation="portrait" fitToWidth="1" fitToHeight="0"/>'+
+          '</worksheet>';
+        const font=(color,bold=false,size=11)=>`<font><sz val="${size}"/>${bold?'<b/>':''}<color rgb="${color}"/><name val="Calibri"/><family val="2"/></font>`;
+        const fill=rgb=>`<fill><patternFill patternType="solid"><fgColor rgb="${rgb}"/><bgColor indexed="64"/></patternFill></fill>`;
+        const border='<border><left style="thin"><color rgb="FFB2C2D6"/></left><right style="thin"><color rgb="FFB2C2D6"/></right><top style="thin"><color rgb="FFB2C2D6"/></top><bottom style="thin"><color rgb="FFB2C2D6"/></bottom><diagonal/></border>';
+        const xf=(fontId,fillId,date=false,center=false)=>`<xf numFmtId="${date?164:0}" fontId="${fontId}" fillId="${fillId}" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" ${date?'applyNumberFormat="1" ':''}applyAlignment="1"><alignment vertical="center" horizontal="${center?'center':'left'}" wrapText="1" indent="1"/></xf>`;
+        const styles=xmlHeader+`<styleSheet xmlns="${ns}">`+
+          '<numFmts count="1"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/></numFmts>'+
+          `<fonts count="4">${font('FF1E293B')}${font('FFFFFFFF',true,12)}${font('FFB42335',true)}${font('FF805100',true)}</fonts>`+
+          '<fills count="7"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>'+
+          fill('FF183765')+fill('FFFFFFFF')+fill('FFF0F5FB')+fill('FFFFE8EB')+fill('FFFFF2C9')+'</fills>'+
+          `<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${border}</borders>`+
+          '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'+
+          '<cellXfs count="14">'+
+          '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'+ // 0
+          xf(1,2,false,false)+ // 1 header
+          xf(0,3,false,false)+xf(0,4,false,false)+ // 2-3 text
+          xf(0,3,true,true)+xf(0,4,true,true)+ // 4-5 dates
+          xf(2,5,false,false)+xf(2,5,true,true)+ // 6-7 expired/today
+          xf(3,6,false,false)+xf(3,6,true,true)+ // 8-9 tomorrow
+          xf(0,3,false,true)+xf(0,4,false,true)+ // 10-11 qty
+          xf(2,5,false,true)+xf(3,6,false,true)+ // 12-13 qty urgent
+          '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+        const workbook=xmlHeader+`<workbook xmlns="${ns}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="CONTROLE DE VALIDADE" sheetId="1" r:id="rId1"/></sheets></workbook>`;
+        const workbookRels=xmlHeader+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+          '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'+
+          '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+        const rootRels=xmlHeader+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+          '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
+        const types=xmlHeader+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
+          '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'+
+          '<Default Extension="xml" ContentType="application/xml"/>'+
+          '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'+
+          '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'+
+          '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>';
+        return makeXlsxZip([
+          ['[Content_Types].xml',types],['_rels/.rels',rootRels],
+          ['xl/workbook.xml',workbook],['xl/_rels/workbook.xml.rels',workbookRels],
+          ['xl/worksheets/sheet1.xml',worksheet],['xl/styles.xml',styles]
+        ]);
+      }
+      $('exportBtn').addEventListener('click',() => {
+        try {
+          const excel=createFormattedXlsx(sortedData());
+          const url=URL.createObjectURL(excel),a=create('a');
+          a.href=url;a.download='CONTROLE_DE_VALIDADE_FORMATADO.xlsx';
+          document.body.append(a);a.click();a.remove();
+          setTimeout(()=>URL.revokeObjectURL(url),5000);
+        } catch (error) {
+          alert('Não foi possível criar o Excel formatado: '+(error.message||'erro desconhecido'));
+        }
+      });
+      // Importação local: CSV exportado por este programa e arquivos .xlsx do Excel.
+      // Não envia arquivos a servidores; nenhum script ou serviço externo é necessário.
+      function parseDelimited(text) {
+        const source = text.replace(/^\uFEFF/, '').replace(/^sep=([;,\t])\r?\n/i,'');
+        const first = source.split(/\r?\n/,1)[0] || '';
+        const delimiter = [';',',','\t'].sort((a,b) => first.split(b).length - first.split(a).length)[0];
+        const rows = [];let row = [];let cell = '';let quoted = false;
+        for (let i=0;i<source.length;i++) {
+          const ch = source[i];
+          if (ch === '"') {
+            if (quoted && source[i+1] === '"') {cell += '"';i++;}
+            else quoted = !quoted;
+          } else if (ch === delimiter && !quoted) {row.push(cell);cell = '';}
+          else if ((ch === '\r' || ch === '\n') && !quoted) {
+            if (ch === '\r' && source[i+1] === '\n') i++;
+            row.push(cell);if (row.some(v => String(v).trim())) rows.push(row);
+            row=[];cell='';
+          } else cell += ch;
+        }
+        if (quoted) throw new Error('O CSV contém aspas não fechadas.');
+        row.push(cell);if (row.some(v => String(v).trim())) rows.push(row);
+        return rows;
+      }
+      function csvDecode(value) {
+        // Remove apenas o prefixo protetor que o exportador adicionou contra fórmulas de planilha.
+        const v = String(value ?? '').trim();
+        return /^'[\s]*[=+\-@]/.test(v) ? v.slice(1) : v;
+      }
+      function xmlElements(node, tag) {return [...node.getElementsByTagNameNS('*',tag)];}
+      function xmlFirst(node, tag) {return xmlElements(node,tag)[0] || null;}
+      function excelDate(serial) {
+        const num = Number(serial);
+        if (!Number.isFinite(num) || num < 1 || num > 2958465) return '';
+        const day = new Date(Date.UTC(1899,11,30) + Math.floor(num)*86400000);
+        return day.toISOString().slice(0,10);
+      }
+      // Lê as entradas ZIP do XLSX usando APIs internas do navegador, sem biblioteca on-line.
+      async function unpackXlsx(buffer) {
+        const bytes = new Uint8Array(buffer), view = new DataView(buffer);
+        let end = -1;
+        for (let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--) {
+          if (view.getUint32(i,true) === 0x06054b50) {end=i;break;}
+        }
+        if (end < 0) throw new Error('Arquivo Excel inválido: estrutura ZIP não encontrada.');
+        const count = view.getUint16(end+10,true), entries = new Map();
+        let cursor = view.getUint32(end+16,true);
+        const decoder = new TextDecoder('utf-8');
+        for (let i=0;i<count;i++) {
+          if (view.getUint32(cursor,true) !== 0x02014b50) throw new Error('Arquivo XLSX com índice inválido.');
+          const method = view.getUint16(cursor+10,true);
+          const compressed = view.getUint32(cursor+20,true);
+          const fileLen = view.getUint16(cursor+28,true);
+          const extraLen = view.getUint16(cursor+30,true);
+          const commentLen = view.getUint16(cursor+32,true);
+          const offset = view.getUint32(cursor+42,true);
+          const name = decoder.decode(bytes.slice(cursor+46,cursor+46+fileLen));
+          entries.set(name,{method,compressed,offset});
+          cursor += 46+fileLen+extraLen+commentLen;
+        }
+        async function read(name) {
+          const entry=entries.get(name);
+          if (!entry) throw new Error(`Planilha Excel incompleta: falta ${name}.`);
+          const pos=entry.offset;
+          if (view.getUint32(pos,true) !== 0x04034b50) throw new Error('Entrada ZIP inválida.');
+          const start=pos+30+view.getUint16(pos+26,true)+view.getUint16(pos+28,true);
+          const content=bytes.slice(start,start+entry.compressed);
+          if (entry.method === 0) return decoder.decode(content);
+          if (entry.method !== 8 || !('DecompressionStream' in window))
+            throw new Error('Este navegador não consegue abrir XLSX. Salve como CSV UTF-8 no Excel e importe novamente.');
+          const stream=new Blob([content]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+          return decoder.decode(await new Response(stream).arrayBuffer());
+        }
+        const parseXML = async name => {
+          const xml=new DOMParser().parseFromString(await read(name),'application/xml');
+          if (xml.getElementsByTagName('parsererror').length) throw new Error('XML inválido no arquivo Excel.');
+          return xml;
+        };
+        const wb=await parseXML('xl/workbook.xml');
+        const shared=entries.has('xl/sharedStrings.xml') ? await parseXML('xl/sharedStrings.xml') : null;
+        const strings=shared ? xmlElements(shared,'si').map(el=>xmlElements(el,'t').map(t=>t.textContent).join('')) : [];
+        const sheets=xmlElements(wb,'sheet');
+        if (!sheets.length) throw new Error('O Excel não contém nenhuma aba.');
+        let target='xl/worksheets/sheet1.xml';
+        if (entries.has('xl/_rels/workbook.xml.rels')) {
+          const rel=await parseXML('xl/_rels/workbook.xml.rels');
+          const relationship=sheets[0].getAttribute('r:id') || sheets[0].getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');
+          const match=xmlElements(rel,'Relationship').find(r=>r.getAttribute('Id') === relationship);
+          if (match) {
+            const path=match.getAttribute('Target') || '';
+            const normalized=path.startsWith('/') ? path.slice(1) : 'xl/'+path;
+            target=normalized.replace(/\\/g,'/').replace(/\/\.\//g,'/');
+          }
+        }
+        if (!entries.has(target)) target=[...entries.keys()].find(p=>/^xl\/worksheets\/sheet\d+\.xml$/.test(p)) || target;
+        const worksheet=await parseXML(target);
+        const rows=[];
+        for (const row of xmlElements(worksheet,'row')) {
+          const fields=[];
+          for (const cell of xmlElements(row,'c')) {
+            const address=cell.getAttribute('r') || '';
+            const letters=(address.match(/^[A-Za-z]+/) || [''])[0].toUpperCase();
+            let index=0;for (const l of letters) index=index*26+l.charCodeAt(0)-64;
+            index=index ? index-1 : fields.length;
+            if (index > 80) continue;
+            const type=cell.getAttribute('t');
+            const value=xmlFirst(cell,'v');
+            let text=value ? value.textContent : '';
+            if (type === 's') text=strings[Number(text)] ?? '';
+            else if (type === 'inlineStr') text=xmlElements(cell,'t').map(t=>t.textContent).join('');
+            fields[index]=text;
+          }
+          if (fields.some(v=>String(v ?? '').trim())) rows.push(fields);
+        }
+        if (!rows.length) throw new Error('A primeira aba da planilha está vazia.');
+        return rows;
+      }
+      function parseImportedDate(input) {
+        const value=String(input ?? '').trim();
+        if (validISO(value)) return value;
+        const br=value.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})(?:\s+.*)?$/);
+        if (br) {
+          const iso=`${br[3]}-${br[2].padStart(2,'0')}-${br[1].padStart(2,'0')}`;
+          return validISO(iso) ? iso : '';
+        }
+        if (/^\d{4}-\d{2}-\d{2}[ T]/.test(value) && validISO(value.slice(0,10))) return value.slice(0,10);
+        if (/^\d+(?:[.,]\d+)?$/.test(value)) {
+          const iso=excelDate(value.replace(',','.'));
+          return validISO(iso) ? iso : '';
+        }
+        return '';
+      }
+      function importedProducts(rows) {
+        let columns=null, heading=-1;
+        for (let i=0;i<Math.min(rows.length,25);i++) {
+          const normalized=rows[i].map(v=>normalizeName(v).replace(/[^a-z0-9]/g,''));
+          const product=normalized.findIndex(v=>['produto','produtos','nome','nomeproduto'].includes(v));
+          const date=normalized.findIndex(v=>['validade','vencimento','datavalidade','datavencimento'].includes(v));
+          if (product>=0 && date>=0) {
+            columns={product,date,qty:normalized.findIndex(v=>['und','unidade','unidades','quantidade','qtd'].includes(v)),other:normalized.findIndex(v=>['outros','observacao','observacoes'].includes(v)),sector:normalized.findIndex(v=>['setor','categoria'].includes(v))};
+            heading=i;break;
+          }
+        }
+        if (!columns) throw new Error('Não encontrei as colunas PRODUTO e VALIDADE. Importe o CSV baixado neste programa ou um XLSX com esses títulos.');
+        let skipped=0, invalid=0;const imported=[];
+        for (const row of rows.slice(heading+1)) {
+          const raw = i => i<0 ? '' : csvDecode(row[i]);
+          const name=uppercaseName(raw(columns.product)).slice(0,160);
+          const date=parseImportedDate(raw(columns.date));
+          const rawQty=raw(columns.qty).replace(',','.');
+          const qty=rawQty === '' ? 0 : Number(rawQty);
+          if (!name || (!date && !String(raw(columns.date)).trim())) {skipped++;continue;}
+          if (!date || !Number.isInteger(qty) || qty<0 || qty>999) {invalid++;continue;}
+          const sector=uppercaseName(raw(columns.sector));
+          imported.push({id:makeId(),name,date,qty,other:raw(columns.other).slice(0,240),sector:SECTORS.includes(sector) ? sector : ''});
+        }
+        if (!imported.length) throw new Error(`Nenhum produto válido encontrado. ${invalid} linha(s) com data ou quantidade inválida e ${skipped} linha(s) em branco.`);
+        return {imported,invalid,skipped};
+      }
+      $('importBtn').addEventListener('click',()=> $('importFile').click());
+      $('importFile').addEventListener('change',async event => {
+        const file=event.target.files?.[0];
+        if (!file) return;
+        const button=$('importBtn');button.disabled=true;button.textContent='⏳ Importando...';
+        try {
+          if (file.size > 25*1024*1024) throw new Error('Arquivo acima de 25 MB. Divida a lista em arquivos menores.');
+          const ext=(file.name.split('.').pop() || '').toLowerCase();
+          let rows;
+          if (ext==='csv') rows=parseDelimited(await file.text());
+          else if (ext==='xlsx') rows=await unpackXlsx(await file.arrayBuffer());
+          else throw new Error('Escolha um arquivo CSV ou Excel .XLSX. Para .XLS antigo, salve como CSV UTF-8 no Excel.');
+          const {imported,invalid,skipped}=importedProducts(rows);
+          const mode=$('importMode').value;
+          const current=new Set(products.map(p=>[normalizeName(p.name),p.date,p.qty,normalizeName(p.other),p.sector].join('|')));
+          const additions=[];
+          for (const p of imported) {
+            const signature=[normalizeName(p.name),p.date,p.qty,normalizeName(p.other),p.sector].join('|');
+            if (!current.has(signature)) {current.add(signature);additions.push(p);}
+          }
+          const message=mode==='replace'
+            ? `Arquivo: ${file.name}\n${imported.length} produto(s) válido(s).\n${invalid} linha(s) inválida(s).\n\nATENÇÃO: substituirá os ${products.length} produto(s) atualmente cadastrados. Deseja continuar?`
+            : `Arquivo: ${file.name}\n${imported.length} produto(s) válido(s).\n${additions.length} novo(s), sem repetir registros idênticos.\n${invalid} linha(s) inválida(s).\n\nDeseja adicionar os novos produtos à lista atual?`;
+          if (!confirm(message)) return;
+          products=mode==='replace' ? imported : [...products,...additions];
+          imported.forEach(p=>rememberName(p.name));
+          resetForm();persist();render();
+          const result=mode==='replace' ? `${imported.length} produto(s) carregado(s)` : `${additions.length} produto(s) adicionado(s)`;
+          $('saveStatus').textContent=`✓ Importação concluída: ${result}. ${invalid ? invalid+' linha(s) inválida(s) ignorada(s).' : ''}`;
+          alert(`✓ Importação concluída!\n${result}.\n${invalid ? invalid+' linha(s) inválida(s) ignorada(s).' : ''}`);
+        } catch (error) {
+          alert(`Não foi possível importar o arquivo.\n${error.message || 'Formato inválido.'}\nSua lista atual não foi alterada.`);
+        } finally {
+          event.target.value='';button.disabled=false;button.textContent='↑ Importar arquivo';
+        }
+      });
+      products = readData();nameHistory = readNameHistory();persist();render(); // Preserva a chave anterior e atualiza cadastros antigos para MAIÚSCULAS.
       window.addEventListener('focus',render);
       document.addEventListener('visibilitychange',() => {if (!document.hidden) render();});
       setInterval(() => {if (!document.hidden) render();},60000); // Detecta a virada do dia enquanto a página está aberta.
